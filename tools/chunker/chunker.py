@@ -18,7 +18,7 @@ class MarkdownChunker:
         strategy: str = "hybrid",
         max_chunk_length: int = 2000,
         chunk_overlap_length: int = 100,
-        heading_level: int = 1,
+        heading_level: int = 3,
         atomic_units: List[AtomicUnit] = None,
     ):
         """
@@ -36,6 +36,8 @@ class MarkdownChunker:
         self.chunk_overlap_length = chunk_overlap_length
         self.heading_level = heading_level
         self.atomic_units = atomic_units or []
+        # Global heading map: position -> heading_path
+        self._heading_map = {}
 
     def chunk(self, text: str) -> List[Tuple[str, List[str]]]:
         """
@@ -47,6 +49,10 @@ class MarkdownChunker:
         Returns:
             List of tuples (chunk_text, heading_path) where heading_path is a list of heading titles
         """
+        # First, build a global heading map for the entire document
+        # This allows us to track heading hierarchy across all chunking strategies
+        self._build_heading_map(text)
+
         if self.strategy == "semantic":
             chunks = self._semantic_chunking(text)
         elif self.strategy == "fixed":
@@ -63,6 +69,112 @@ class MarkdownChunker:
         chunks = [(c[0].strip(), c[1]) for c in chunks if c[0].strip()]
 
         return chunks
+
+    def _build_heading_map(self, text: str) -> None:
+        """
+        Build a global heading map that tracks the heading hierarchy at every position in the text.
+        This map is used by all chunking strategies to ensure complete heading paths.
+
+        The map stores: position -> complete heading path up to that position
+        """
+        self._heading_map = {}
+
+        # Find all headings in the document
+        heading_pattern = r"(?:^|\n)(#{1,6}) ([^\n]+)"
+        all_headings = []
+
+        for match in re.finditer(heading_pattern, text):
+            level = len(match.group(1))
+            title = match.group(2).strip()
+            position = match.start()
+
+            # Truncate title to 30 characters
+            if len(title) > 30:
+                title = title[:30]
+
+            all_headings.append({
+                'level': level,
+                'title': title,
+                'position': position
+            })
+
+        # Build heading stack and map each position to its heading path
+        heading_stack = []
+
+        for heading in all_headings:
+            level = heading['level']
+            title = heading['title']
+            position = heading['position']
+
+            # Maintain the stack: remove headings at same or deeper levels
+            while len(heading_stack) >= level:
+                heading_stack.pop()
+
+            # Add current heading to stack
+            heading_stack.append(title)
+
+            # Store the current path for this position
+            self._heading_map[position] = list(heading_stack)
+
+    def _find_first_heading_position(self, text: str) -> int | None:
+        """
+        Find the position of the first heading in the given text.
+
+        Args:
+            text: Text to search
+
+        Returns:
+            Position of first heading, or None if no heading found
+        """
+        heading_pattern = r"^(#{1,6}) "
+        match = re.search(heading_pattern, text, re.MULTILINE)
+        if match:
+            return match.start()
+        return None
+
+    def _find_last_heading_position(self, text: str) -> int | None:
+        """
+        Find the position of the last heading in the given text.
+
+        Args:
+            text: Text to search
+
+        Returns:
+            Position of last heading, or None if no heading found
+        """
+        heading_pattern = r"^(#{1,6}) "
+        matches = list(re.finditer(heading_pattern, text, re.MULTILINE))
+        if matches:
+            return matches[-1].start()
+        return None
+
+    def _get_heading_path_at_position(self, _text: str, position: int) -> List[str]:
+        """
+        Get the complete heading path for a given position in the text.
+        Uses the global heading map built by _build_heading_map.
+
+        Args:
+            _text: Full text (unused, kept for API compatibility)
+            position: Position in text
+
+        Returns:
+            Complete heading path (list of heading titles)
+        """
+        if not self._heading_map:
+            return []
+
+        # Find the closest heading at or before this position
+        closest_position = -1
+        for heading_pos in sorted(self._heading_map.keys()):
+            if heading_pos <= position:
+                closest_position = heading_pos
+            else:
+                break
+
+        if closest_position >= 0:
+            return self._heading_map[closest_position]
+        else:
+            return []
 
     def _semantic_chunking(self, text: str) -> List[Tuple[str, List[str]]]:
         """
@@ -112,8 +224,8 @@ class MarkdownChunker:
         if first_split['position'] > 0:
             before_content = text[: first_split['position']].strip()
             if before_content:
-                # Extract any headings from content before first split
-                heading_path = self._extract_heading_path(before_content)
+                # Get heading path at position 0 using global heading map
+                heading_path = self._get_heading_path_at_position(text, 0)
                 chunks.append((before_content, heading_path))
 
         # Use a stack to track heading hierarchy across ALL headings (H1-H6)
@@ -163,12 +275,22 @@ class MarkdownChunker:
             else:
                 end = len(text)
 
-            # Extract chunk
-            chunk = text[start:end].strip()
+            # Extract chunk (don't strip yet, we need accurate positions)
+            chunk_unstripped = text[start:end]
+            chunk = chunk_unstripped.strip()
             if chunk:
-                # Use the current heading stack as the heading path
-                # This gives us the complete hierarchy including parent headings
-                heading_path = list(heading_stack)
+                # Find the FIRST heading in the unstripped chunk to get accurate position
+                # The first heading represents the primary topic/context of this chunk
+                chunk_first_heading_pos = self._find_first_heading_position(chunk_unstripped)
+                if chunk_first_heading_pos is not None:
+                    # Get the absolute position in the full text
+                    absolute_pos = start + chunk_first_heading_pos
+                    # Use the global heading map to get the complete path
+                    heading_path = self._get_heading_path_at_position(text, absolute_pos)
+                else:
+                    # No heading in chunk, use current stack
+                    heading_path = list(heading_stack)
+
                 chunks.append((chunk, heading_path))
 
         return chunks
@@ -197,8 +319,8 @@ class MarkdownChunker:
             # Extract chunk
             chunk = text[start:split_pos].strip()
             if chunk:
-                # Extract heading path from this chunk
-                heading_path = self._extract_heading_path(chunk)
+                # Get heading path at the start position using global heading map
+                heading_path = self._get_heading_path_at_position(text, start)
                 chunks.append((chunk, heading_path))
 
             # Move to next chunk

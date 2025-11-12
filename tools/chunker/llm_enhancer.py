@@ -295,6 +295,9 @@ Please return a JSON array with corrected levels. Each item should have:
   - Use 7 to indicate this is NOT a heading (e.g., it's a sentence fragment, formula reference, or normal text)
 - "title": the original title (unchanged)
 
+Pay attention to fundamental logic, such as ensuring adjacent headings at the same level share the same hierarchical structure,
+and maintain contextual coherence and logical consistency.
+
 Important: Use level=7 for items that are clearly NOT headings, such as:
 - Sentence fragments ending with punctuation (。；：)
 - Pure symbols or numbers like "(1)", "式中，"

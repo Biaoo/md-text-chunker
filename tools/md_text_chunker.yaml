@@ -8,11 +8,11 @@ identity:
     ja_JP: "Markdown チャンカー"
 description:
   human:
-    en_US: "A flexible tool for chunking markdown text using various strategies (semantic, fixed-size, or hybrid)"
-    zh_Hans: "一个灵活的 Markdown 文本分块工具,支持多种分块策略(语义、固定大小或混合)"
-    pt_BR: "Uma ferramenta flexível para dividir texto markdown usando várias estratégias"
-    ja_JP: "様々な戦略を使用してマークダウンテキストをチャンク化する柔軟なツール"
-  llm: "A tool for chunking markdown text with support for semantic (heading-based), fixed-size, or hybrid strategies. Input should be the markdown text you want to chunk."
+    en_US: "An intelligent markdown text chunker with heading hierarchy preservation and optional LLM-based heading enhancement"
+    zh_Hans: "智能 Markdown 文本分块工具,保留标题层级结构,支持可选的 LLM 标题增强"
+    pt_BR: "Um divisor inteligente de texto markdown com preservação de hierarquia de títulos"
+    ja_JP: "見出し階層を保持するインテリジェントなマークダウンテキストチャンカー"
+  llm: "A tool for intelligently chunking markdown text while preserving heading hierarchy. Supports optional LLM-based heading enhancement, configurable heading levels, and metadata injection. Input should be the markdown text you want to chunk."
 parameters:
   - name: input_text
     type: string
@@ -137,6 +137,38 @@ parameters:
       ja_JP: "タイトル強化に使用するモデル名"
     llm_description: "Name of the LLM model to use for heading hierarchy correction."
     default: "gpt-3.5-turbo"
+    form: llm
+  - name: heading_level
+    type: number
+    required: false
+    label:
+      en_US: Semantic Chunking Heading Level
+      zh_Hans: 语义分块标题层级
+      pt_BR: Nível de Título de Chunking Semântico
+      ja_JP: セマンティックチャンクの見出しレベル
+    human_description:
+      en_US: "Heading level to use for semantic chunking (1-6, where 1=H1, 2=H2, etc.)"
+      zh_Hans: "用于语义分块的标题层级（1-6，其中 1=H1, 2=H2，等）"
+      pt_BR: "Nível de título para usar na divisão semântica (1-6, onde 1=H1, 2=H2, etc.)"
+      ja_JP: "セマンティックチャンクに使用する見出しレベル（1-6、1=H1、2=H2など）"
+    llm_description: "Heading level for semantic chunking. Lower levels create larger chunks (H1 splits at top-level headings), higher levels create smaller chunks (H3 splits at sub-sub-headings)."
+    default: 3
+    form: llm
+  - name: add_metadata
+    type: boolean
+    required: false
+    label:
+      en_US: Add Metadata to Chunks
+      zh_Hans: 为分块添加元数据
+      pt_BR: Adicionar Metadados aos Blocos
+      ja_JP: チャンクにメタデータを追加
+    human_description:
+      en_US: "Add XML metadata (title and heading path) to the beginning of each chunk"
+      zh_Hans: "在每个分块的开头添加 XML 元数据（标题和标题路径）"
+      pt_BR: "Adicionar metadados XML (título e caminho de título) no início de cada bloco"
+      ja_JP: "各チャンクの先頭にXMLメタデータ（タイトルと見出しパス）を追加"
+    llm_description: "Whether to prepend XML metadata containing file title and heading hierarchy path to each chunk. Useful for providing context in RAG systems."
+    default: true
     form: llm
 output_schema:
   type: object

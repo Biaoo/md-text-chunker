@@ -31,6 +31,10 @@ class MdTextChunkerTool(Tool):
             # Fixed max_chunk_length (not configurable)
             max_chunk_length = 2000
 
+            # Chunking parameters
+            heading_level = tool_parameters.get("heading_level", 3)
+            add_metadata = tool_parameters.get("add_metadata", True)
+
             # LLM enhancement parameters
             enable_llm_enhancement = tool_parameters.get("enable_llm_enhancement", False)
             llm_api_base = tool_parameters.get("llm_api_base", "")
@@ -74,25 +78,28 @@ class MdTextChunkerTool(Tool):
             )
             atomic_units = detector.detect(processed_text)
 
-            # Phase 4: Chunk using hybrid strategy with heading_level=1
+            # Phase 4: Chunk using hybrid strategy with configurable heading_level
             chunker = MarkdownChunker(
                 strategy="hybrid",
                 max_chunk_length=max_chunk_length,
                 chunk_overlap_length=0,  # No overlap
-                heading_level=1,
+                heading_level=heading_level,
                 atomic_units=atomic_units,
             )
             chunk_tuples = chunker.chunk(processed_text)
 
-            # Phase 5: Add metadata to each chunk
+            # Phase 5: Optionally add metadata to each chunk
             chunks_with_metadata = []
             for chunk_text, heading_path in chunk_tuples:
-                # Build metadata XML
-                metadata = self._build_metadata(file_title, heading_path)
-
-                # Prepend metadata to chunk
-                chunk_with_metadata = f"{metadata}\n{chunk_text}"
-                chunks_with_metadata.append(chunk_with_metadata)
+                if add_metadata:
+                    # Build metadata XML
+                    metadata = self._build_metadata(file_title, heading_path)
+                    # Prepend metadata to chunk
+                    chunk_with_metadata = f"{metadata}\n{chunk_text}"
+                    chunks_with_metadata.append(chunk_with_metadata)
+                else:
+                    # No metadata, just use the chunk text
+                    chunks_with_metadata.append(chunk_text)
 
             # Phase 6: Return result in Dify standard format
             # Output is GeneralStructureChunk: list of strings

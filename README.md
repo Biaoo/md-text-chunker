@@ -66,7 +66,8 @@ An intelligent Markdown text chunking tool designed for RAG (Retrieval-Augmented
 ### Output Format
 
 #### With Metadata (default)
-```xml
+
+```markdown
 <metadata>
 <Title>Document Title</Title>
 <Headings>Main Topic > Subsection > Detail</Headings>
@@ -76,7 +77,8 @@ An intelligent Markdown text chunking tool designed for RAG (Retrieval-Augmented
 ```
 
 #### Without Metadata
-```
+
+```markdown
 [Chunk content here...]
 ```
 
@@ -111,6 +113,7 @@ An intelligent Markdown text chunking tool designed for RAG (Retrieval-Augmented
 ### Configuration Example
 
 **Basic Usage:**
+
 ```yaml
 input_text: "# Main Title\n## Subtitle\nContent here..."
 heading_level: 3
@@ -118,6 +121,7 @@ add_metadata: true
 ```
 
 **With LLM Enhancement:**
+
 ```yaml
 input_text: "Your markdown content..."
 heading_level: 2
@@ -234,7 +238,8 @@ biaoo
 ### 输出格式
 
 #### 带元数据（默认）
-```xml
+
+```markdown
 <metadata>
 <Title>文档标题</Title>
 <Headings>主题 > 子章节 > 细节</Headings>
@@ -244,7 +249,8 @@ biaoo
 ```
 
 #### 不带元数据
-```
+
+```markdown
 [分块内容...]
 ```
 
@@ -279,6 +285,7 @@ biaoo
 ### 配置示例
 
 **基础使用：**
+
 ```yaml
 input_text: "# 主标题\n## 副标题\n内容..."
 heading_level: 3
@@ -286,6 +293,7 @@ add_metadata: true
 ```
 
 **使用 LLM 增强：**
+
 ```yaml
 input_text: "你的 Markdown 内容..."
 heading_level: 2

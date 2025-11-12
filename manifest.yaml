@@ -3,15 +3,15 @@ type: plugin
 author: biaoo
 name: md-text-chunker
 label:
-  en_US: md-text-chunker
-  ja_JP: md-text-chunker
-  zh_Hans: md-text-chunker
-  pt_BR: md-text-chunker
+  en_US: Markdown Text Chunker
+  ja_JP: Markdown チャンカー
+  zh_Hans: Markdown 文本分块
+  pt_BR: Markdown Chunker
 description:
-  en_US: A flexible tool for chunking markdown text using various strategies
-  ja_JP: A flexible tool for chunking markdown text using various strategies
-  zh_Hans: A flexible tool for chunking markdown text using various strategies
-  pt_BR: A flexible tool for chunking markdown text using various strategies
+  en_US: An intelligent markdown text chunker with heading hierarchy preservation and optional LLM-based heading enhancement
+  ja_JP: 見出し階層を保持するインテリジェントなマークダウンテキストチャンカー
+  zh_Hans: 智能 Markdown 文本分块工具,保留标题层级结构,支持可选的 LLM 标题增强
+  pt_BR: Um divisor inteligente de texto markdown com preservação de hierarquia de títulos
 icon: icon.svg
 icon_dark: icon-dark.svg
 resource:
@@ -19,7 +19,7 @@ resource:
   permission: {}
 plugins:
   tools:
-    - provider/md-text-chunker.yaml
+    - provider/md_text_chunker.yaml
 meta:
   version: 0.0.1
   arch:

@@ -1,5 +1,9 @@
 # Markdown Text Chunker Plugin
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/Biaoo/md-text-chunker)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Dify Plugin](https://img.shields.io/badge/Dify-Plugin-orange)](https://dify.ai)
+
 [中文文档](#中文文档) | [English](#english)
 
 ---
@@ -9,6 +13,8 @@
 ### Overview
 
 An intelligent Markdown text chunking tool designed for RAG (Retrieval-Augmented Generation) systems. This plugin intelligently splits Markdown documents while preserving complete heading hierarchy and providing rich contextual metadata.
+
+**GitHub Repository**: [https://github.com/Biaoo/md-text-chunker](https://github.com/Biaoo/md-text-chunker)
 
 ### Key Features
 
@@ -175,6 +181,8 @@ biaoo
 ### 概述
 
 专为 RAG（检索增强生成）系统设计的智能 Markdown 文本分块工具。该插件能够智能分割 Markdown 文档，同时保留完整的标题层级结构并提供丰富的上下文元数据。
+
+**项目地址**: [https://github.com/Biaoo/md-text-chunker](https://github.com/Biaoo/md-text-chunker)
 
 ### 核心特性
 

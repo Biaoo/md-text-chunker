@@ -56,7 +56,7 @@ identity:
 #         en_US: "Access Token"
 
 tools:
-  - tools/md-text-chunker.yaml
+  - tools/md_text_chunker.yaml
 extra:
   python:
-    source: provider/md-text-chunker.py
+    source: provider/md_text_chunker.py

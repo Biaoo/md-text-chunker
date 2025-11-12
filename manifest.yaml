@@ -1,0 +1,35 @@
+version: 0.0.1
+type: plugin
+author: biaoo
+name: md-text-chunker
+label:
+  en_US: md-text-chunker
+  ja_JP: md-text-chunker
+  zh_Hans: md-text-chunker
+  pt_BR: md-text-chunker
+description:
+  en_US: A flexible tool for chunking markdown text using various strategies
+  ja_JP: A flexible tool for chunking markdown text using various strategies
+  zh_Hans: A flexible tool for chunking markdown text using various strategies
+  pt_BR: A flexible tool for chunking markdown text using various strategies
+icon: icon.svg
+icon_dark: icon-dark.svg
+resource:
+  memory: 268435456
+  permission: {}
+plugins:
+  tools:
+    - provider/md-text-chunker.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+  minimum_dify_version: null
+created_at: 2025-11-12T16:18:52.61718+08:00
+privacy: PRIVACY.md
+verified: false

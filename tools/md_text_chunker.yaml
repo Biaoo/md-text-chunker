@@ -1,0 +1,148 @@
+identity:
+  name: "md-text-chunker"
+  author: "biaoo"
+  label:
+    en_US: "Markdown Chunker"
+    zh_Hans: "Markdown 文本分块"
+    pt_BR: "Markdown Chunker"
+    ja_JP: "Markdown チャンカー"
+description:
+  human:
+    en_US: "A flexible tool for chunking markdown text using various strategies (semantic, fixed-size, or hybrid)"
+    zh_Hans: "一个灵活的 Markdown 文本分块工具,支持多种分块策略(语义、固定大小或混合)"
+    pt_BR: "Uma ferramenta flexível para dividir texto markdown usando várias estratégias"
+    ja_JP: "様々な戦略を使用してマークダウンテキストをチャンク化する柔軟なツール"
+  llm: "A tool for chunking markdown text with support for semantic (heading-based), fixed-size, or hybrid strategies. Input should be the markdown text you want to chunk."
+parameters:
+  - name: input_text
+    type: string
+    required: true
+    label:
+      en_US: Input Content
+      zh_Hans: 输入内容
+      pt_BR: Conteúdo de Entrada
+      ja_JP: 入力コンテンツ
+    human_description:
+      en_US: "The markdown text you want to chunk"
+      zh_Hans: "你想要分块的 Markdown 文本"
+      pt_BR: "O texto markdown que você deseja dividir"
+      ja_JP: "チャンク化したいマークダウンテキスト"
+    llm_description: "The markdown text you want to chunk. Should be valid markdown format."
+    form: llm
+  - name: file_title
+    type: string
+    required: false
+    label:
+      en_US: File Title
+      zh_Hans: 文件标题
+      pt_BR: Título do Arquivo
+      ja_JP: ファイルタイトル
+    human_description:
+      en_US: "Optional file title to be included in chunk metadata"
+      zh_Hans: "可选的文件标题,将被包含在块的元数据中"
+      pt_BR: "Título opcional do arquivo a ser incluído nos metadados do bloco"
+      ja_JP: "チャンクのメタデータに含まれるオプションのファイルタイトル"
+    llm_description: "Optional file title that will be included in the metadata of each chunk."
+    form: llm
+  - name: remove_extra_spaces
+    type: boolean
+    required: false
+    label:
+      en_US: Replace consecutive spaces, newlines and tabs
+      zh_Hans: 替换连续的空格、换行符和制表符
+      pt_BR: Substituir espaços, quebras de linha e tabs consecutivos
+      ja_JP: 連続するスペース、改行、タブを置換
+    human_description:
+      en_US: "Replace consecutive spaces, newlines and tabs with single space"
+      zh_Hans: "将连续的空格、换行符和制表符替换为单个空格"
+      pt_BR: "Substituir espaços, quebras de linha e tabs consecutivos por espaço único"
+      ja_JP: "連続するスペース、改行、タブを単一のスペースに置換"
+    llm_description: "Whether to replace consecutive whitespace characters (spaces, newlines, tabs) with a single space."
+    default: false
+    form: llm
+  - name: remove_urls_emails
+    type: boolean
+    required: false
+    label:
+      en_US: Delete all URLs and email addresses
+      zh_Hans: 删除所有 URL 和电子邮件地址
+      pt_BR: Excluir todas as URLs e endereços de e-mail
+      ja_JP: すべてのURLとメールアドレスを削除
+    human_description:
+      en_US: "Remove all URLs and email addresses from the text"
+      zh_Hans: "从文本中删除所有 URL 和电子邮件地址"
+      pt_BR: "Remover todas as URLs e endereços de e-mail do texto"
+      ja_JP: "テキストからすべてのURLとメールアドレスを削除"
+    llm_description: "Whether to remove all URLs and email addresses from the text."
+    default: false
+    form: llm
+  - name: enable_llm_enhancement
+    type: boolean
+    required: false
+    label:
+      en_US: Enable LLM Heading Enhancement
+      zh_Hans: 启用 LLM 标题增强
+      pt_BR: Ativar Aprimoramento de Título LLM
+      ja_JP: LLMタイトル強化を有効にする
+    human_description:
+      en_US: "Use LLM to correct heading hierarchy levels"
+      zh_Hans: "使用 LLM 纠正标题层级结构"
+      pt_BR: "Usar LLM para corrigir níveis de hierarquia de título"
+      ja_JP: "LLMを使用して見出し階層レベルを修正する"
+    llm_description: "Whether to use LLM to analyze and correct heading levels in the document."
+    default: false
+    form: llm
+  - name: llm_api_base
+    type: string
+    required: false
+    label:
+      en_US: LLM API Base URL
+      zh_Hans: LLM API 基础地址
+      pt_BR: URL Base da API LLM
+      ja_JP: LLM APIベースURL
+    human_description:
+      en_US: "OpenAI-compatible API base URL (e.g., https://api.openai.com/v1/chat/completions)"
+      zh_Hans: "OpenAI 兼容的 API 基础地址（例如: https://api.openai.com/v1/chat/completions）"
+      pt_BR: "URL base da API compatível com OpenAI"
+      ja_JP: "OpenAI互換APIのベースURL"
+    llm_description: "Base URL for OpenAI-compatible LLM API endpoint."
+    form: llm
+  - name: llm_api_key
+    type: string
+    required: false
+    label:
+      en_US: LLM API Key
+      zh_Hans: LLM API 密钥
+      pt_BR: Chave da API LLM
+      ja_JP: LLM APIキー
+    human_description:
+      en_US: "API key for LLM authentication"
+      zh_Hans: "LLM API 认证密钥"
+      pt_BR: "Chave de API para autenticação LLM"
+      ja_JP: "LLM認証用のAPIキー"
+    llm_description: "API key for authenticating with the LLM service."
+    form: llm
+  - name: llm_model
+    type: string
+    required: false
+    label:
+      en_US: LLM Model Name
+      zh_Hans: LLM 模型名称
+      pt_BR: Nome do Modelo LLM
+      ja_JP: LLMモデル名
+    human_description:
+      en_US: "Model name to use for heading enhancement (e.g., gpt-3.5-turbo)"
+      zh_Hans: "用于标题增强的模型名称（例如: gpt-3.5-turbo）"
+      pt_BR: "Nome do modelo para usar no aprimoramento de título"
+      ja_JP: "タイトル強化に使用するモデル名"
+    llm_description: "Name of the LLM model to use for heading hierarchy correction."
+    default: "gpt-3.5-turbo"
+    form: llm
+output_schema:
+  type: object
+  properties:
+    result:
+      $ref: "https://dify.ai/schemas/v1/general_structure.json"
+extra:
+  python:
+    source: tools/md_text_chunker.py
